@@ -1,28 +1,28 @@
 import mongoose from 'mongoose';
 const {Schema,model} = mongoose;
 
-const contactsSchema = Schema({
-    contactName:{
+const profileSchema = Schema({
+    firstName:{
         type : String,
         required : true
 
     },
 
-    contactNumber:{
+    LastName:{
         type:String,
         required:true 
     },
 
-    contactEmail:{
+    dateOfBirth:{
         type: String,
-        required: false
+        required: true
     },
 
-    contactGroup:{
+    school:{
         type: String,
-        required: false
+        required: true
     }
 });
 
-const contactsModel= model('contact', contactsSchema);
-export default contactsModel;
+const profileModel= model('profile', profileSchema);
+export default profileModel;

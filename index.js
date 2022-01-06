@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 import express from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
-import contactsModel from './schema/schema.js';
+import profileModel from './schema/schema.js';
 
 
 
@@ -16,58 +16,59 @@ app.use(cors());
 app.use(express.json());
 
 
-const PORT = process.env.PORT || 4000;
+const PORT = 4000;
 
-const db = process.env.DB_URL
 
-mongoose.connect(db, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-}).then(() => console.log(`connected to DB`))
-.catch(err => console.log(err));
+
 
 
 app.get('/', async(req,res)=>{
 
     res.json({
-        message:'Welcome to the contacts backend API'
+        message:'Welcome to the profile backend API'
     })
 })
 
+//Get all users
+app.get(`/profile`,async(req,res)=>{
+    const allProfiles = await profileModel.find({});
 
-app.get(`/contacts`,async(req,res)=>{
-    const allContacts = await contactsModel.find({});
-
-    if (allContacts){
+    if (allProfiles){
         //success
         return res.status(200).json({
-            message: `Contacts fetched successfully`,
-            data: allContacts
+            message: `user fetched successfully`,
+            data: allProfiles
         });
     }else {
         //error
         return res.status(500).json({
-            message: `Oops! unable to fetch contacts`
+            message: `Oops! unable to fetch user`
         });
     }
 })
 
 
-//Get all group contacts
 
-app.get('/contacts/:group', async (req,res)=>{
-    const {group}= req.params;
-    const allGroupContacts= await contactsModel.find({}).where("group").equals(group);
 
-    if(allGroupContacts){
-         return res.status(200).json({
-             message: 'Contacts group fetched successfully',
-             data: allGroupContacts
-         });
+//create a new profile
+app.post('/profile', async (req, res) => {
+    const {firstName, lastName,dateOfBirth,school}= req.body;
+    const newProfile= await profileModel.create({
+        firstName,
+        lastName,
+        dateOfBirth,
+        school,
+    });
+
+    if(newProfile){
+        //success
+        return res.status(200).json({
+            message: `User has been created`
+        })
     }else{
         return res.status(500).json({
-            message: `Unable to fetch ${group} contacts`
-        });
+            message: `User unable to create `
+        })
     }
 })
 
